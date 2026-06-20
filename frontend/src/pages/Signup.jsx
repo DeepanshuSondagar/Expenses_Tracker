@@ -17,15 +17,27 @@ const Signup = () => {
 
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
+    if (!emailRegex.test(email)) {
+      return { valid: false, message: 'Please enter a valid email address (e.g., user@example.com)' };
+    }
+
+    const validDomains = ['gmail.com', 'yahoo.com', 'outlook.com', 'hotmail.com', 'icloud.com', 'aol.com', 'protonmail.com', 'mail.com', 'zoho.com', 'yandex.com'];
+    const domain = email.split('@')[1].toLowerCase();
+
+    if (!validDomains.includes(domain)) {
+      return { valid: false, message: 'Please use a valid email domain (e.g., gmail.com, yahoo.com, outlook.com)' };
+    }
+
+    return { valid: true, message: 'Valid email' };
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
 
-    if (!validateEmail(formData.email)) {
-      setError('Please enter a valid email address (e.g., user@example.com)');
+    const emailValidation = validateEmail(formData.email);
+    if (!emailValidation.valid) {
+      setError(emailValidation.message);
       return;
     }
 
@@ -34,11 +46,11 @@ const Signup = () => {
       return;
     }
 
-try {
-  const result = await register(formData.firstName, formData.lastName, formData.email, formData.password);
-  navigate('/dashboard');
-} catch (err) {
-  setError(err.response?.data?.message || 'Registration failed. Please try again.')
+    try {
+      const result = await register(formData.firstName, formData.lastName, formData.email, formData.password);
+      navigate('/dashboard');
+    } catch (err) {
+      setError(err.response?.data?.message || 'Registration failed. Please try again.');
     }
   };
 
@@ -51,8 +63,9 @@ try {
 
     // Real-time email validation
     if (e.target.name === 'email' && value) {
-      if (!validateEmail(value)) {
-        setError('Please enter a valid email address (e.g., user@example.com)');
+      const emailValidation = validateEmail(value);
+      if (!emailValidation.valid) {
+        setError(emailValidation.message);
       } else {
         setError('');
       }
@@ -60,8 +73,11 @@ try {
   };
 
   const handleEmailBlur = () => {
-    if (formData.email && !validateEmail(formData.email)) {
-      setError('Please enter a valid email address (e.g., user@example.com)');
+    if (formData.email) {
+      const emailValidation = validateEmail(formData.email);
+      if (!emailValidation.valid) {
+        setError(emailValidation.message);
+      }
     }
   };
 
