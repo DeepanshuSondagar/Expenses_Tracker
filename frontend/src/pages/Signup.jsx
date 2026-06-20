@@ -36,7 +36,7 @@ const Signup = () => {
 
     try {
       const result = await register(formData.firstName, formData.lastName, formData.email, formData.password);
-      console.log('Registration successful:', result);
+      // console.log('Registration successful:', result);
       navigate('/dashboard');
     } catch (err) {
       console.error('Registration error:', err);
