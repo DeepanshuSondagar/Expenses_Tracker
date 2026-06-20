@@ -133,22 +133,7 @@ const Login = () => {
               />
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
-              <input
-                type="password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                required
-              />
-              <div className="flex justify-end mt-1">
-                <Link to="#" className="text-sm text-primary-600 hover:underline">
-                  Forgot password?
-                </Link>
-              </div>
-            </div>
+             
 
             <div className="flex items-center gap-2">
               <input
