@@ -34,13 +34,11 @@ const Signup = () => {
       return;
     }
 
-    try {
-      const result = await register(formData.firstName, formData.lastName, formData.email, formData.password);
-      // console.log('Registration successful:', result);
-      navigate('/dashboard');
-    } catch (err) {
-      console.error('Registration error:', err);
-      setError(err.response?.data?.message || 'Registration failed. Please try again.');
+try {
+  const result = await register(formData.firstName, formData.lastName, formData.email, formData.password);
+  navigate('/dashboard');
+} catch (err) {
+  setError(err.response?.data?.message || 'Registration failed. Please try again.')
     }
   };
 
