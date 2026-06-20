@@ -3,11 +3,16 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import path from 'path';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 import authRoutes from './routes/auth.js';
 import expenseRoutes from './routes/expenses.js';
 import incomeRoutes from './routes/income.js';
 import userRoutes from './routes/user.js';
 import budgetRoutes from './routes/budgets.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 dotenv.config();
 
