@@ -21,7 +21,7 @@ const app = express();
 // Middleware
 app.use(cors({
   origin: process.env.NODE_ENV === 'production'
-    ? ['https://your-frontend.onrender.com', 'https://yourdomain.com']
+    ? ['https://expenses-tracker-1-aymm.onrender.com']
     : 'http://localhost:5173',
   credentials: true
 }));
