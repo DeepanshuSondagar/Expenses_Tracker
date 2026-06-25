@@ -16,22 +16,16 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      fetchUser();
-    } else {
-      setLoading(false);
-    }
+    fetchUser();
   }, []);
 
   const fetchUser = async () => {
     try {
       const response = await api.get('/auth/me');
-      // console.log('User data fetched:', response.data.user);
       setUser(response.data.user);
     } catch (error) {
       console.error('Error fetching user:', error);
-      localStorage.removeItem('token');
+      setUser(null);
     } finally {
       setLoading(false);
     }
@@ -39,22 +33,25 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     const response = await api.post('/auth/login', { email, password });
-    localStorage.setItem('token', response.data.token);
     setUser(response.data.user);
     return response.data;
   };
 
   const register = async (firstName, lastName, email, password) => {
     const response = await api.post('/auth/register', { firstName, lastName, email, password });
-    localStorage.setItem('token', response.data.token);
     setUser(response.data.user);
     return response.data;
   };
 
-  const logout = () => {
-    localStorage.removeItem('token');
-    localStorage.setItem('lastPage', window.location.pathname);
-    setUser(null);
+  const logout = async () => {
+    try {
+      await api.post('/auth/logout');
+    } catch (error) {
+      console.error('Logout error:', error);
+    } finally {
+      localStorage.setItem('lastPage', window.location.pathname);
+      setUser(null);
+    }
   };
 
   return (

@@ -8,6 +8,16 @@ const generateToken = (id) => {
   });
 };
 
+// Set JWT Token in HTTP-only Cookie
+const setTokenCookie = (res, token) => {
+  res.cookie('authToken', token, {
+    httpOnly: true,              // 🔒 Not accessible via JavaScript
+    secure: process.env.NODE_ENV === 'production',  // HTTPS only in production
+    sameSite: 'strict',          // 🔒 CSRF protection
+    maxAge: 24 * 60 * 60 * 1000  // 24 hours
+  });
+};
+
 // @desc    Register user
 // @route   POST /api/auth/register
 // @access  Public
@@ -32,9 +42,11 @@ export const register = async (req, res) => {
     console.log('✅ User created:', user._id);
     const token = generateToken(user._id);
 
+    // Set token in HTTP-only cookie
+    setTokenCookie(res, token);
+
     res.status(201).json({
       success: true,
-      token,
       user: {
         id: user._id,
         firstName: user.firstName,
@@ -77,9 +89,11 @@ export const login = async (req, res) => {
     console.log('✅ Login successful:', email);
     const token = generateToken(user._id);
 
+    // Set token in HTTP-only cookie
+    setTokenCookie(res, token);
+
     res.status(200).json({
       success: true,
-      token,
       user: {
         id: user._id,
         firstName: user.firstName,
@@ -116,6 +130,25 @@ export const getMe = async (req, res) => {
     });
   } catch (error) {
     console.error('❌ Get user error:', error.message);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// @desc    Logout user
+// @route   POST /api/auth/logout
+// @access  Private
+export const logout = async (req, res) => {
+  try {
+    // Clear the HTTP-only cookie
+    res.clearCookie('authToken', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict'
+    });
+
+    res.status(200).json({ success: true, message: 'Logged out successfully' });
+  } catch (error) {
+    console.error('❌ Logout error:', error.message);
     res.status(500).json({ message: error.message });
   }
 };
