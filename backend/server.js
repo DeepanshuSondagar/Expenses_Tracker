@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
+import cookieParser from 'cookie-parser';
 import authRoutes from './routes/auth.js';
 import expenseRoutes from './routes/expenses.js';
 import incomeRoutes from './routes/income.js';
@@ -25,6 +26,7 @@ app.use(cors({
     : 'http://localhost:5173',
   credentials: true
 }));
+app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
